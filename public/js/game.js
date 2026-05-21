@@ -22,6 +22,7 @@ let gameState = {
     },
 };
 const powerupInterval = 5;
+const powerupDuration = 1000;
 
 const gameGrid = document.getElementById("game");
 const startBtn = document.getElementById("start-btn");
@@ -152,7 +153,7 @@ function triggerPowerup() {
             card.classList.remove("flipped");
         });
         gameState.powerActive = false;
-    }, 500);
+    }, powerupDuration);
 }
 
 async function createBoard(rows, cols) {
