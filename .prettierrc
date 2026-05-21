@@ -1,0 +1,19 @@
+{
+    "tabWidth": 4,
+    "useTabs": false,
+    "jsxSingleQuote": false,
+    "singleQuote": false,
+    "trailingComma": "es5",
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "semi": true,
+    "printWidth": 100,
+    "overrides": [
+        {
+            "files": "*.ejs",
+            "options": {
+                "parser": "html"
+            }
+        }
+    ]
+}

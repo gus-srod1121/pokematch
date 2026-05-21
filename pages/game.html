@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- STYLES -->
+        <link rel="stylesheet" href="./styles/app.css" />
+
+        <title>PokeMatch!</title>
+    </head>
+    <body>
+        <nav class="navbar">
+            <section class="flex flex-row items-baseline justify-center">
+                <div class="flex-1 flex justify-center items-center">
+                    <h1 class="font-semibold m-4 text-4xl">PokeMatch!</h1>
+                </div>
+            </section>
+        </nav>
+        <main>
+            <section>
+                <div class="flex flex-row gap-4 my-4">
+                    <div class="flex flex-row items-center self-center">
+                        <div class="dropdown dropdown-start dropdown-hover">
+                            <div id="difficulty-label" tabindex="0" role="button" class="btn m-1">
+                                Difficulty
+                            </div>
+                            <ul
+                                id="difficulty-dropdown-list"
+                                tabindex="-1"
+                                class="dropdown-content menu bg-base-100 w-32 rounded-box z-1 p-2 shadow-sm"
+                            ></ul>
+                        </div>
+                    </div>
+                    <div class="flex flex-row gap-2">
+                        <button id="start-btn" class="btn btn-accent">Start</button>
+                        <button id="reset-btn" class="btn">Reset</button>
+                    </div>
+                </div>
+
+                <progress id="game-progress" class="progress" value="0" max="100"></progress>
+
+                <div id="game" class="p-2 rounded-xl flex flex-col gap-4 items-center justify-baseline w-full bg-[rgba(255,0,0,0.2)]"></div>
+            </section>
+        </main>
+
+        <template id="card-template">
+            <div class="card">
+                <div class="card-front">
+                    <img class="pokemon-img"/>
+                </div>
+                <div class="card-back">
+                    <img src="./assets/card-back.png" alt="Red card" /></div>
+            </div>
+        </template>
+
+        <template id="row-template">
+            <div class="flex flex-row gap-4 justify-center items-center w-full"></div>
+        </template>
+
+        <script src="./js/game.js" type="module"></script>
+    </body>
+</html>
