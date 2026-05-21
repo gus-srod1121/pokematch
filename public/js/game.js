@@ -8,6 +8,10 @@ const DIFFICULTIES = {
 
 let gameState = {
     isGameActive: false,
+    timer: {
+        timerId: null,
+        timeLeft: 0,
+    },
     currentDifficulty: Object.keys(DIFFICULTIES)[0],
     flippedCards: [],
     stats: {
@@ -26,6 +30,7 @@ const totalPairsCounter = document.getElementById("totalpairs-counter");
 const matchCounter = document.getElementById("match-counter");
 const pairsLeftCounter = document.getElementById("pairsleft-counter");
 
+const timer = document.getElementById("timer");
 const progressBar = document.getElementById("game-progress");
 
 const difficultyDropdownList = document.getElementById("difficulty-dropdown-list");
@@ -36,6 +41,7 @@ const rowTemplate = document.getElementById("row-template");
 
 function setup() {
     populateDifficulty();
+    resetGame();
 
     startBtn.addEventListener("click", startGame);
     resetBtn.addEventListener("click", resetGame);
@@ -65,6 +71,7 @@ function populateDifficulty() {
 
 function selectDifficulty(e, difficulty) {
     gameState.currentDifficulty = difficulty;
+    timer.innerText = `${DIFFICULTIES[gameState.currentDifficulty].time}`;
 
     const allButtons = difficultyDropdownList.querySelectorAll("button");
     const allDifficulties = Object.keys(DIFFICULTIES);
@@ -90,7 +97,37 @@ function startGame() {
     gameState.stats.totalPairs = (rows * cols) / 2;
     totalPairsCounter.innerText = `${gameState.stats.totalPairs}`;
 
+    startTimer();
     createBoard(rows, cols);
+}
+
+function startTimer() {
+    clearInterval(gameState.timer.timerId);
+
+    const totalTime = DIFFICULTIES[gameState.currentDifficulty].time;
+    gameState.timer.timeLeft = totalTime;
+
+    progressBar.max = totalTime;
+    progressBar.value = 0;
+
+    timer.innerText = `${gameState.timer.timeLeft}`;
+    
+
+    gameState.timer.timerId = setInterval(() => {
+        gameState.timer.timeLeft--;
+        // progressBar.value = (gameState.timer.timeLeft * 100) / totalTime;
+        timer.innerText = `${gameState.timer.timeLeft}`;
+        progressBar.value = gameState.timer.timeLeft;
+
+        if (gameState.timer.timeLeft <= 0) {
+            clearInterval(gameState.timer.timerId);
+            gameState.isGameActive = false;
+
+            setTimeout(() => {
+                alert("Game Over! You ran out of time.");
+            }, 200);
+        }
+    }, 1000);
 }
 
 async function createBoard(rows, cols) {
@@ -179,14 +216,17 @@ function checkForMatch() {
         card1.classList.add("matched");
         card2.classList.add("matched");
 
-        gameState.pairsMatched++;
+        gameState.stats.pairsMatched++;
         gameState.flippedCards = [];
 
         pairsLeftCounter.innerText = `${gameState.stats.totalPairs - gameState.stats.pairsMatched}`;
         matchCounter.innerText = `${gameState.stats.pairsMatched}`;
 
         if (gameState.stats.pairsMatched == gameState.stats.totalPairs) {
-            alert(`You won! Completed in ${gameState.stats.clicks} clicks.`);
+            setTimeout(() => {
+                clearInterval(gameState.timer.timerId);
+                alert(`You won! Completed in ${gameState.stats.clicks} clicks.`);
+            }, 500);
         }
     } else {
         /* NO MATCH */
@@ -210,13 +250,25 @@ function shuffle(group) {
 }
 
 function resetGame() {
+    clearInterval(gameState.timer.timerId);
     gameGrid.innerHTML = "";
     progressBar.value = 0;
+
     gameState.isGameActive = false;
+
+    gameState.timer.timerId = null;
+    gameState.timer.timeLeft = 0;
+
     gameState.stats.clicks = 0;
     gameState.stats.pairsMatched = 0;
     gameState.stats.totalPairs = 0;
     gameState.flippedCards = [];
+
+    clickCounter.innerText = "0";
+    totalPairsCounter.innerText = "0";
+    matchCounter.innerText = "0";
+    pairsLeftCounter.innerText = "0";
+    timer.innerText = DIFFICULTIES[gameState.currentDifficulty].time;
 }
 
 setup();
