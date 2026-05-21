@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-    themes: caramellatte --default;
+    themes: caramellatte --default, dark, light, cyberpunk, coffee, bumblebee, night, retro;
 };
 
 @import "./styles/global.css";
