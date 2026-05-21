@@ -7,7 +7,8 @@ const DIFFICULTIES = {
 };
 
 let gameState = {
-    isGameActive: false,
+    gameActive: false,
+    powerActive: false,
     timer: {
         timerId: null,
         timeLeft: 0,
@@ -20,6 +21,7 @@ let gameState = {
         totalPairs: 0,
     },
 };
+const powerupInterval = 5;
 
 const gameGrid = document.getElementById("game");
 const startBtn = document.getElementById("start-btn");
@@ -87,12 +89,12 @@ function selectDifficulty(e, difficulty) {
 }
 
 function startGame() {
-    if (gameState.isGameActive) {
+    if (gameState.gameActive) {
         console.log("Game already running");
         return;
     }
 
-    gameState.isGameActive = true;
+    gameState.gameActive = true;
     const { rows, cols } = DIFFICULTIES[gameState.currentDifficulty];
     gameState.stats.totalPairs = (rows * cols) / 2;
     totalPairsCounter.innerText = `${gameState.stats.totalPairs}`;
@@ -111,7 +113,6 @@ function startTimer() {
     progressBar.value = 0;
 
     timer.innerText = `${gameState.timer.timeLeft}`;
-    
 
     gameState.timer.timerId = setInterval(() => {
         gameState.timer.timeLeft--;
@@ -119,15 +120,39 @@ function startTimer() {
         timer.innerText = `${gameState.timer.timeLeft}`;
         progressBar.value = gameState.timer.timeLeft;
 
+        if (
+            gameState.timer.timeLeft % powerupInterval == 0 &&
+            gameState.timer.timeLeft != totalTime
+        ) {
+            triggerPowerup();
+        }
+
         if (gameState.timer.timeLeft <= 0) {
             clearInterval(gameState.timer.timerId);
-            gameState.isGameActive = false;
+            gameState.gameActive = false;
 
             setTimeout(() => {
                 alert("Game Over! You ran out of time.");
             }, 200);
         }
     }, 1000);
+}
+
+function triggerPowerup() {
+    console.log("Powerup active");
+    gameState.powerupActive = true;
+
+    const allCards = Array.from(document.querySelectorAll(".card"));
+
+    const unmatchedCards = allCards.filter((card) => !(card.classList.contains("matched") || card.classList.contains("flipped")));
+    unmatchedCards.forEach((card) => card.classList.add("flipped"));
+
+    setTimeout(() => {
+        unmatchedCards.forEach((card) => {
+            card.classList.remove("flipped");
+        });
+        gameState.powerActive = false;
+    }, 500);
 }
 
 async function createBoard(rows, cols) {
@@ -167,13 +192,8 @@ async function createBoard(rows, cols) {
             }
 
             card.addEventListener("click", () => {
-                console.log("Card clicked");
-                console.log("IsGameActive:", gameState.isGameActive);
-                console.log("Flipped Cards:", gameState.flippedCards.length);
-                console.log("Does card have 'flipped' class?:", card.classList.contains("flipped"));
-
-                if (!gameState.isGameActive) {
-                    console.log("BLOCKED: Game is not active! Did you press the Start button?");
+                if (!(gameState.gameActive || gameState.powerActive)) {
+                    console.log("Game not started");
                     return;
                 }
 
@@ -254,7 +274,8 @@ function resetGame() {
     gameGrid.innerHTML = "";
     progressBar.value = 0;
 
-    gameState.isGameActive = false;
+    gameState.gameActive = false;
+    gameState.powerupActive = false;
 
     gameState.timer.timerId = null;
     gameState.timer.timeLeft = 0;
