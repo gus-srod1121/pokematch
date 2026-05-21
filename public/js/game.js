@@ -20,7 +20,14 @@ let gameState = {
 const gameGrid = document.getElementById("game");
 const startBtn = document.getElementById("start-btn");
 const resetBtn = document.getElementById("reset-btn");
+
+const clickCounter = document.getElementById("click-counter");
+const totalPairsCounter = document.getElementById("totalpairs-counter");
+const matchCounter = document.getElementById("match-counter");
+const pairsLeftCounter = document.getElementById("pairsleft-counter");
+
 const progressBar = document.getElementById("game-progress");
+
 const difficultyDropdownList = document.getElementById("difficulty-dropdown-list");
 const difficultyLabel = document.getElementById("difficulty-label");
 
@@ -81,6 +88,8 @@ function startGame() {
     gameState.isGameActive = true;
     const { rows, cols } = DIFFICULTIES[gameState.currentDifficulty];
     gameState.stats.totalPairs = (rows * cols) / 2;
+    totalPairsCounter.innerText = `${gameState.stats.totalPairs}`;
+
     createBoard(rows, cols);
 }
 
@@ -99,7 +108,7 @@ async function createBoard(rows, cols) {
         return;
     }
 
-    pokemons.sort(() => Math.random() - 0.5);
+    shuffle(pokemons);
     let deckIndex = 0;
 
     for (let i = 0; i < rows; i++) {
@@ -140,8 +149,9 @@ async function createBoard(rows, cols) {
                 }
 
                 card.classList.toggle("flipped");
-                gameState.stats.clicks++;
                 gameState.flippedCards.push(card);
+
+                clickCounter.innerText = `${++gameState.stats.clicks}`;
 
                 if (gameState.flippedCards.length == 2) {
                     checkForMatch();
@@ -172,16 +182,31 @@ function checkForMatch() {
         gameState.pairsMatched++;
         gameState.flippedCards = [];
 
+        pairsLeftCounter.innerText = `${gameState.stats.totalPairs - gameState.stats.pairsMatched}`;
+        matchCounter.innerText = `${gameState.stats.pairsMatched}`;
+
         if (gameState.stats.pairsMatched == gameState.stats.totalPairs) {
-            alert(`You won! COmpleted in ${gameState.stats.clicks} clicks.`);
+            alert(`You won! Completed in ${gameState.stats.clicks} clicks.`);
         }
     } else {
         /* NO MATCH */
         console.log("No match, removing flipped");
-        card1.classList.remove("flipped");
-        card2.classList.remove("flipped");
         gameState.flippedCards = [];
+        setTimeout(() => {
+            card1.classList.remove("flipped");
+            card2.classList.remove("flipped");
+        }, 400);
     }
+}
+
+function shuffle(group) {
+    for (let i = 1; i < group.length; i++) {
+        const j = Math.floor(Math.random() * i);
+        const temp = group[i];
+        group[i] = group[j];
+        group[j] = temp;
+    }
+    return group;
 }
 
 function resetGame() {

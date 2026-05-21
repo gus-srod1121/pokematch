@@ -20,9 +20,13 @@
         <main>
             <section>
                 <div class="flex flex-row gap-4 my-4">
-                    <div class="flex flex-row items-center self-center">
-                        <div class="dropdown dropdown-start dropdown-hover">
-                            <div id="difficulty-label" tabindex="0" role="button" class="btn m-1">
+                    <div class="flex flex-row gap-2">
+                        <button id="start-btn" class="flex flex-1 w-full h-full btn justify-center items-center btn-accent">Start</button>
+                        <button id="reset-btn" class="flex flex-1 w-full h-full btn justify-center items-center">Reset</button>
+                    </div>
+                    <div class="flex-1 flex flex-row items-center self-center gap-2">
+                        <div class="flex-1 flex dropdown dropdown-start dropdown-hover">
+                            <div id="difficulty-label" tabindex="0" role="button" class="flex-1 btn m-1">
                                 Difficulty
                             </div>
                             <ul
@@ -31,10 +35,20 @@
                                 class="dropdown-content menu bg-base-100 w-32 rounded-box z-1 p-2 shadow-sm"
                             ></ul>
                         </div>
-                    </div>
-                    <div class="flex flex-row gap-2">
-                        <button id="start-btn" class="btn btn-accent">Start</button>
-                        <button id="reset-btn" class="btn">Reset</button>
+                        <div class="flex-1 flex bg-[rgba(255,0,0,0.2)] rounded-md">
+                            <div class="flex1 p-2">
+                                <p>Clicks: <span id="clicks-counter"></span></p>
+                                <p>Total pairs: <span id="totalpairs-counter"></span></p>
+                                <p>Matches: <span id="matches-counter"></span></p>
+                                <p>Pairs left: <span id="pairsleft-counter"></span></p>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex">
+                            <button class="btn flex flex-1 w-full h-full">Powerup</button>
+                        </div>
+                        <div class="flex-1 flex w-full h-full">
+                            <p class="p-2">Timer:</p>
+                        </div>
                     </div>
                 </div>
 
